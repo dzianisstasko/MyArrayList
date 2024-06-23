@@ -26,16 +26,20 @@ public class MyLinkedList<T> {
      * @param t - будет добавлен в MyLinkedList
      */
     public void add(T t) {
-        Node<T> newNode = new Node<>(t, null); //во время добавления инициализируем новую ноду с значением t, во время инициализации t.next == null
+        Node<T> newNode = new Node<>(t, null, null); //во время добавления инициализируем новую ноду с значением t, во время инициализации t.next и prev == null
         if (lastNode == null) { //если лист пустой
             lastNode = newNode; //крайняя нода становится новым значением
             firstNode = lastNode; //так как элемент один, первой ноде присвоили крайнюю
         } else if (firstNode == lastNode) { //если добавляем вторую ноду
             firstNode.next = newNode; //присваиваем ссылку на новый элемент первой ноде, до этого был null
             lastNode = newNode; //крайней ноде присваиваем новую ноду
+            lastNode.prev = firstNode;
         } else { //если в листе 2 и более элементов вставляем в конец
+            Node<T>temp = lastNode;
             lastNode.next = newNode;//ссылка крайней ноды на новый элемент
             lastNode = newNode;//переопределяем крайнюю ноду на новое значение
+            lastNode.prev = temp;
+
         }
         size++;//увеличиваем счетчик размера листа
     }
@@ -54,18 +58,25 @@ public class MyLinkedList<T> {
         } else if (size == 1) { //если лист содержит 1 элемент
             lastNode = null;
             firstNode = null;
-        } else if (index == 0) { //если массив не пустой и хотим удалить первый элемент
+        } else if (index == 0) { //если лист не пустой и хотим удалить первый элемент
             firstNode = firstNode.next;
-        } else { //остальные случаи
+            firstNode.prev = null;
+        }else if(index == size-1) {
+            lastNode = lastNode.prev;
+            lastNode.next = null;
+        }else{
+            //остальные случаи
             Node<T> temp = firstNode; //создаем временную переменную с помощью которой будем итерироваться по листу
-            for (int i = 0; i < index - 1; i++) { //итерируемся до позиции индекс - 1 (позиция перед удаляемой)
+            Node<T> temp2 = null;
+            for (int i = 0; i < index; i++) { //итерируемся до позиции индекс - 1 (позиция перед удаляемой)
+                if(i==index-1){
+                    temp2 = temp;
+                }
                 temp = temp.next;
             }
-            if (temp.next.next == null) { //если позиция после удаляемой null, значит наш элемент под требуемым индексом крайний
-                temp.next = null; //переопределяем ссылку на null
-            } else {
-                temp.next = temp.next.next; //если требуемый элемент не крайний - меняем ссылку на следующий после удаляемого
-            }
+            temp2.next = temp.next;
+            temp.prev = temp2;
+
         }
         size--;//уменьшаем счетчик размера листа
     }
@@ -151,11 +162,12 @@ public class MyLinkedList<T> {
      *
      * @return сообщение в консоль
      */
+
     @Override
     public String toString() {
         return "MyLinkedList{" +
-                "head=" + lastNode +
-                ", tail=" + firstNode +
+                "lastNode=" + lastNode +
+                ", firstNode=" + firstNode +
                 ", size=" + size +
                 '}';
     }
@@ -167,10 +179,12 @@ public class MyLinkedList<T> {
     private class Node<T> {
         private T data;
         private Node<T> next;
+        private Node<T> prev;
 
-        public Node(T data, Node<T> next) {
+        public Node(T data, Node<T> prev, Node<T> next) {
             this.data = data;
             this.next = null;
+            this.prev = null;
         }
 
         @Override
