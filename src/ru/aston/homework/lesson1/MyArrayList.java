@@ -2,9 +2,11 @@ package ru.aston.homework.lesson1;
 
 //Методы — add+, remove+, get+, set+, subList+, size+
 
+import java.util.Arrays;
+
 /**
  * MyArrayList - аналог ArrayList
- * @param <T> любой ссылочный тип который необходимо присвоить листу
+ * @field <T> любой ссылочный тип который необходимо присвоить листу
  * @value DEFAULT_SIZE - переменная стартовая емкость массива
  * @value array - массив стартовой емкостью в DEFAULT_SIZE
  * @value listSize - переменная счетчик доступной емкости листа в данный момент
@@ -17,23 +19,20 @@ public class MyArrayList<T>{
     private Object[] array = new Object[DEFAULT_SIZE]; //создаем пустой массив дефолтного размера
     private int listSize = DEFAULT_SIZE; //емкость массива
     private int lastObjectCounter = 0; //количество "занятых" ячеек
-    private int newArrayIndexCounter = 0;
 
     /**
      * addElement - добавляет указанный элемент в конец списка
      * @param t  будет добавлен в конец списка
      */
-    public void addElement(T t){                 // делаем метод который добавляет элемент в конец массива и при необходимости расширяет его
+    public void addElement(T t){
+        // делаем метод который добавляет элемент в конец массива и при необходимости расширяет его
         if(lastObjectCounter==listSize){
             Object[] n = new Object[array.length*2];
-            for(Object x : array){
-                n[newArrayIndexCounter++] = x;
-            }
+            System.arraycopy(array, 0, n, 0, array.length);
             array = n;
-            this.listSize = this.array.length;
+            listSize = array.length;
         }
-        array[this.lastObjectCounter++] = t;
-        newArrayIndexCounter = 0;
+        array[lastObjectCounter++] = t;
     }
     /**
      * getSize - возвращает длину списка только с учетом занятых ячеек
@@ -56,13 +55,12 @@ public class MyArrayList<T>{
      * @param indexToRemove элемент этого индекса будет удален из списка
      */
     public void removeElement(int indexToRemove){ //удаляем элемент, смещая остальные
-        for(int i = indexToRemove; i < listSize-1; i++){
-            if(i==indexToRemove){
-                this.array[i] = null;
-            }
-            this.array[i] = this.array[i+1];
+        array[indexToRemove] = null;
+        for(int i = indexToRemove; i < lastObjectCounter-1; i++){
+            array[i] = array[i+1];
         }
-        this.lastObjectCounter--;
+        array[lastObjectCounter-1] = null;
+        lastObjectCounter--;
     }
 
     /**
@@ -71,7 +69,7 @@ public class MyArrayList<T>{
      * @return T возвращает элемент из списка
      */
     public T getElement(int indexOfElement){ //получаем элемент по индексу
-        return (T) this.array[indexOfElement];
+        return (T) array[indexOfElement];
     }
 
     /**
@@ -80,7 +78,7 @@ public class MyArrayList<T>{
      * @param t элемент который будет установлен
      */
     public void setNewValue(int index, T t){ //ставим новое значение по индексу
-        this.array[index] = t;
+        array[index] = t;
     }
 
     /**
@@ -101,7 +99,13 @@ public class MyArrayList<T>{
      * someInfoAboutArray - выводит в консоль информацию о занятых ячейках и общей емкости листа
      */
     public void someInfoAboutArray(){
-        System.out.println("В данном листе на данный момент элементов - " + this.lastObjectCounter);
-        System.out.println("Емкость листа составляет в данный момент - " + this.listSize);
+        System.out.println("В данном листе на данный момент элементов - " + lastObjectCounter);
+        System.out.println("Емкость листа составляет в данный момент - " + listSize);
     }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(array);
+    }
+
 }
