@@ -7,9 +7,9 @@ package ru.aston.homework.lesson1;
  *            Моя реализация LinkedList без использования методов Collection
  */
 public class MyLinkedList<T> {
-    private Node<T> lastNode;
-    private Node<T> firstNode;
-    private int size;
+    private Node<T> lastNode; //крайняя нода
+    private Node<T> firstNode;//первая нода
+    private int size;//размер текущего листа
 
     /**
      * Пустой конструктор
@@ -26,18 +26,18 @@ public class MyLinkedList<T> {
      * @param t - будет добавлен в MyLinkedList
      */
     public void add(T t) {
-        Node<T> newNode = new Node<>(t, null);
-        if (lastNode == null) {
-            lastNode = newNode;
-            firstNode = lastNode;
-        } else if (firstNode == lastNode) {
-            firstNode.next = newNode;
-            lastNode = newNode;
-        } else {
-            lastNode.next = newNode;
-            lastNode = newNode;
+        Node<T> newNode = new Node<>(t, null); //во время добавления инициализируем новую ноду с значением t, во время инициализации t.next == null
+        if (lastNode == null) { //если лист пустой
+            lastNode = newNode; //крайняя нода становится новым значением
+            firstNode = lastNode; //так как элемент один, первой ноде присвоили крайнюю
+        } else if (firstNode == lastNode) { //если добавляем вторую ноду
+            firstNode.next = newNode; //присваиваем ссылку на новый элемент первой ноде, до этого был null
+            lastNode = newNode; //крайней ноде присваиваем новую ноду
+        } else { //если в листе 2 и более элементов вставляем в конец
+            lastNode.next = newNode;//ссылка крайней ноды на новый элемент
+            lastNode = newNode;//переопределяем крайнюю ноду на новое значение
         }
-        size++;
+        size++;//увеличиваем счетчик размера листа
     }
 
     /**
@@ -46,28 +46,28 @@ public class MyLinkedList<T> {
      * @param index - элемент под указанным индексом будет удален
      */
     public void remove(int index) {
-        if (index < 0 || index > size) {
+        if (index < 0 || index > size) { //проверяем валиден ли индекс
             return;
         }
-        if (size == 0) {
+        if (size == 0) { //если лист пустой
             return;
-        } else if (size == 1) {
+        } else if (size == 1) { //если лист содержит 1 элемент
             lastNode = null;
             firstNode = null;
-        } else if (index == 0) {
+        } else if (index == 0) { //если массив не пустой и хотим удалить первый элемент
             firstNode = firstNode.next;
-        } else {
-            Node<T> temp = firstNode;
-            for (int i = 0; i < index - 1; i++) {
+        } else { //остальные случаи
+            Node<T> temp = firstNode; //создаем временную переменную с помощью которой будем итерироваться по листу
+            for (int i = 0; i < index - 1; i++) { //итерируемся до позиции индекс - 1 (позиция перед удаляемой)
                 temp = temp.next;
             }
-            if (temp.next.next == null) {
-                temp.next = null;
+            if (temp.next.next == null) { //если позиция после удаляемой null, значит наш элемент под требуемым индексом крайний
+                temp.next = null; //переопределяем ссылку на null
             } else {
-                temp.next = temp.next.next;
+                temp.next = temp.next.next; //если требуемый элемент не крайний - меняем ссылку на следующий после удаляемого
             }
         }
-        size--;
+        size--;//уменьшаем счетчик размера листа
     }
 
     /**

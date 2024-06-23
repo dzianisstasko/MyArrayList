@@ -38,6 +38,12 @@ public class Main {
 
         System.out.println(myLinkedList);
 
+        myLinkedList.remove(0);
+        myLinkedList.remove(3);
+        myLinkedList.remove(7);
+
+        System.out.println(myLinkedList);
+
 
     }
 }
